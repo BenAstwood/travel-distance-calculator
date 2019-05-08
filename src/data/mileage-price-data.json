@@ -1,0 +1,12 @@
+{
+  "taxi": {
+    "price": 40
+  },
+  "car": {
+    "price": 20,
+    "extraCharge": 3
+  },
+  "flight": {
+    "price": 10
+  }
+}
