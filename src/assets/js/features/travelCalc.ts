@@ -138,10 +138,12 @@ export const travelCalc = {
   },
 
   processCost(flights, journeys, prices) {
-    return journeys.forEach(journey => {
+    journeys.forEach(journey => {
       journey.route = travelCalc.pickFlightRoute(journey, flights);
       journey.cost = travelCalc.flightCost(journey.route, prices);
       journey.routeString = travelCalc.flightRouteString(journey.route);
     });
+
+    return journeys;
   }
 };
