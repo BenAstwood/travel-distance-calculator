@@ -1,3 +1,17 @@
-<p>
-  calc-travel works!
-</p>
+<div class="table">
+  <table class="rc-table__table">
+    <thead class="rc-table__thead">
+      <tr class="rc-table__row">
+        <th class="rc-table__th">No.</th>
+        <th class="rc-table__th">Flight cost</th>
+      </tr>
+    </thead>
+    <tbody class="table__tbody">
+      <tr *ngFor="let outcome of outcomes; let i = index" class="table__row">
+        <td class="rc-table__td">{{ outcome.id }}</td>
+        <td class="rc-table__td">{{ outcome.cost }}</td>
+        <td class="rc-table__td">{{ outcome.routeString }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
