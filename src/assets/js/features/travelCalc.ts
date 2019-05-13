@@ -29,6 +29,10 @@ export const travelCalc = {
 
       journey.depart = splitString[0];
       journey.homeToAirport = distance;
+      journey.returnLeg = {
+        depart: journey.destination,
+        destination: journey.depart
+      };
 
       return journey;
     });
@@ -122,9 +126,9 @@ export const travelCalc = {
     return ((totalDistance * flight.price) / 100).toFixed(2);
   },
 
-  flightRouteString(route) {
+  flightRouteString(route, inboundFlight = false) {
     if (route.length === 0) {
-      return "No outbound route";
+      return inboundFlight ? "No inbound route" : "No outbound route";
     } else {
       return route.length === 1
         ? route[0].flightName
@@ -141,6 +145,18 @@ export const travelCalc = {
       journey.route = travelCalc.pickFlightRoute(journey, flights);
       journey.cost = travelCalc.flightCost(journey.route, prices);
       journey.routeString = travelCalc.flightRouteString(journey.route);
+      journey.returnLeg.route = travelCalc.pickFlightRoute(
+        journey.returnLeg,
+        flights
+      );
+      journey.returnLeg.cost = travelCalc.flightCost(
+        journey.returnLeg.route,
+        prices
+      );
+      journey.returnLeg.routeString = travelCalc.flightRouteString(
+        journey.returnLeg.route,
+        true
+      );
     });
 
     return journeys;
