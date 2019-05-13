@@ -1,4 +1,13 @@
 export const travelCalc = {
+  /**
+   * Initialising method, which returns outcome data.
+   *
+   * @param {Object} data
+   * Fetched and parsed JSON data.
+   *
+   * @returns {Object}
+   * Returned data outcome.
+   */
   init(data) {
     let { flight, journeys, price } = data;
 
@@ -9,6 +18,16 @@ export const travelCalc = {
     return data.outcome;
   },
 
+  /**
+   * Method which configures the journeys data object so
+   * that it can be passed to the logic methods.
+   *
+   * @param {Object} journeys
+   * Fetched and parsed journeys JSON data.
+   *
+   * @returns {Object} journey
+   * Better formatted journeys data object.
+   */
   configJourneys(journeys) {
     return journeys.map(journey => {
       const splitString = journey.homeToAirport.split("");
@@ -25,6 +44,16 @@ export const travelCalc = {
     });
   },
 
+  /**
+   * Method which configures the flights data object so
+   * that it can be passed to the logic methods.
+   *
+   * @param {Object} flights
+   * Fetched and parsed flights JSON data.
+   *
+   * @returns {Object}
+   * Object created with the flights data.
+   */
   configFlights(flights) {
     return flights.map(flight => {
       const splitString = flight.split("");
@@ -39,6 +68,22 @@ export const travelCalc = {
     });
   },
 
+  /**
+   * Measures the distances for 'Non-stop' flights.
+   * Pushing the shortest to the route array.
+   *
+   * @param {Array} route
+   * An array which the shortest distance flight pushed to it.
+   *
+   * @param {Null|Number} routeDistance
+   * Variable used for checking against.
+   *
+   * @param {destFlight} destFlight
+   * A flight and instance of the destFilghts array.
+   *
+   * @returns {Boolean}
+   * Boolean value used for checking within the invoking method.
+   */
   noneStopFlight(route, routeDistance, destFlight) {
     if (routeDistance === null || destFlight.distance < routeDistance) {
       routeDistance = destFlight.distance;
@@ -47,6 +92,15 @@ export const travelCalc = {
     }
   },
 
+  /**
+   * Calculating method for one stop and two stop journeys.
+   *
+   * @param {Object} options
+   * Object containing properties used for logic operations within this method.
+   *
+   * @returns {Object} finalRoute
+   * Object containing the calculated final route data.
+   */
   multiStopFlight(options) {
     let { route, destFlight, flights, journey } = options;
     let routeDistance = null;
@@ -97,6 +151,18 @@ export const travelCalc = {
     return finalRoute;
   },
 
+  /**
+   * Flight route picking method.
+   *
+   * @param {Object} journey
+   * Journey data.
+   *
+   * @param {Object} flights
+   * Flights data.
+   *
+   * @returns {Object} route
+   * Final route object.
+   */
   pickFlightRoute(journey, flights) {
     const destFlights = flights.filter(
       flight => flight.arrival === journey.destination
@@ -125,6 +191,20 @@ export const travelCalc = {
     return route;
   },
 
+  /**
+   * Calculates cost of the flights, comparing price, distamnce and passenger amount.
+   *
+   * @param {Array} route
+   * Array of flight routes.
+   *
+   * @param {Object} prices
+   * Object of prices for taxi, airplane and car.
+   *
+   * @param {Number} passengers
+   * Passenger amount.
+   *
+   * @returns {Number}
+   */
   flightCost(route, prices, passengers = 1) {
     const { flight } = prices;
     let totalDistance = 0;
@@ -133,6 +213,17 @@ export const travelCalc = {
     return (((totalDistance * flight.price) / 100) * passengers).toFixed(2);
   },
 
+  /**
+   * Concatinates flghts in the routes array into a string.
+   *
+   * @param {Array} route
+   * Array of flights which make up the journey route.
+   *
+   * @param {Boolen} inboundFlight
+   * Boolean value used for checking, default is set to false.
+   *
+   * @returns {String}
+   */
   flightRouteString(route, inboundFlight = false) {
     if (route.length === 0) {
       return inboundFlight ? "No inbound route" : "No outbound route";
@@ -147,6 +238,21 @@ export const travelCalc = {
     }
   },
 
+  /**
+   * This method passes data for each journey into the logic methods.
+   *
+   * @param {Array} flights
+   * Array of the flights data.
+   *
+   * @param {Array} journeys
+   * Array of the journeys data.
+   *
+   * @param {Object} prices
+   * Object containing the prices data.
+   *
+   * @returns {Array} journeys
+   * Returns calcuated journeys.
+   */
   processCost(flights, journeys, prices) {
     journeys.forEach(journey => {
       journey.route = travelCalc.pickFlightRoute(journey, flights);
