@@ -49,7 +49,6 @@ export const travelCalc = {
   },
 
   pickFlightRoute(journey, flights) {
-    const { depart, destination } = journey;
     const destFlights = flights.filter(
       flight => flight.arrival === journey.destination
     );
@@ -126,15 +125,15 @@ export const travelCalc = {
   flightRouteString(route) {
     if (route.length === 0) {
       return "No outbound route";
+    } else {
+      return route.length === 1
+        ? route[0].flightName
+        : route
+            .map((leg, index) =>
+              index === 0 ? leg.flightName : `--${leg.flightName}`
+            )
+            .join("");
     }
-
-    return route.length === 1
-      ? route[0].flightName
-      : route
-          .map((leg, index) =>
-            index === 0 ? leg.flightName : `--${leg.flightName}`
-          )
-          .join("");
   },
 
   processCost(flights, journeys, prices) {
