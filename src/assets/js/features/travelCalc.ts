@@ -52,6 +52,64 @@ export const travelCalc = {
     });
   },
 
+  noneStopFlight(route, routeDistance, destFlight) {
+    if (routeDistance === null || destFlight.distance < routeDistance) {
+      routeDistance = destFlight.distance;
+      route.push(destFlight);
+      return true;
+    }
+  },
+
+  multiStopFlight(options) {
+    let { route, destFlight, flights, journey } = options;
+    let routeDistance = null;
+    let finalRoute = [];
+
+    const journeyStartFlights = flights.filter(
+      startFlight => journey.depart === startFlight.depart
+    );
+    const startFlights = journeyStartFlights.filter(
+      startFlight => destFlight.depart === startFlight.arrival
+    );
+
+    if (startFlights.length > 0) {
+      const oneStopDistance = startFlights[0].distance + destFlight.distance;
+
+      if (route.length > 0) {
+        if (routeDistance < oneStopDistance) {
+          finalRoute.push(startFlights[0], destFlight);
+        } else {
+          return;
+        }
+      } else {
+        finalRoute.push(startFlights[0], destFlight);
+        routeDistance = oneStopDistance;
+      }
+    } else {
+      journeyStartFlights.forEach(journeyStartFlight => {
+        flights
+          .filter(flight => journeyStartFlight.arrival === flight.depart)
+          .filter(flight => flight.arrival === destFlight.depart)
+          .map(flight => {
+            const twoStopRouteDistance =
+              journeyStartFlight.distance +
+              flight.distance +
+              destFlight.distance;
+
+            if (
+              routeDistance === null ||
+              twoStopRouteDistance < routeDistance
+            ) {
+              routeDistance = twoStopRouteDistance;
+              finalRoute.push(journeyStartFlight, flight, destFlight);
+            }
+          });
+      });
+    }
+
+    return finalRoute;
+  },
+
   pickFlightRoute(journey, flights) {
     const destFlights = flights.filter(
       flight => flight.arrival === journey.destination
@@ -62,68 +120,30 @@ export const travelCalc = {
 
     destFlights.forEach(destFlight => {
       if (journey.depart === destFlight.depart) {
-        if (routeDistance === null || destFlight.distance < routeDistance) {
-          routeDistance = destFlight.distance;
-          route.push(destFlight);
-        }
-
-        nonStopFlight = true;
+        nonStopFlight = travelCalc.noneStopFlight(
+          route,
+          routeDistance,
+          destFlight
+        );
       } else if (nonStopFlight !== true) {
-        const journeyStartFlights = flights.filter(
-          startFlight => journey.depart === startFlight.depart
-        );
-        const startFlights = journeyStartFlights.filter(
-          startFlight => destFlight.depart === startFlight.arrival
-        );
-
-        if (startFlights.length > 0) {
-          const oneStopDistance =
-            startFlights[0].distance + destFlight.distance;
-
-          if (route.length > 0) {
-            if (routeDistance < oneStopDistance) {
-              route.push(startFlights[0], destFlight);
-            } else {
-              return;
-            }
-          } else {
-            route.push(startFlights[0], destFlight);
-            routeDistance = oneStopDistance;
-          }
-        } else {
-          journeyStartFlights.forEach(journeyStartFlight => {
-            flights
-              .filter(flight => journeyStartFlight.arrival === flight.depart)
-              .filter(flight => flight.arrival === destFlight.depart)
-              .map(flight => {
-                const twoStopRouteDistance =
-                  journeyStartFlight.distance +
-                  flight.distance +
-                  destFlight.distance;
-
-                if (
-                  routeDistance === null ||
-                  twoStopRouteDistance < routeDistance
-                ) {
-                  routeDistance = twoStopRouteDistance;
-                  route = [];
-                  route.push(journeyStartFlight, flight, destFlight);
-                }
-              });
-          });
-        }
+        route = travelCalc.multiStopFlight({
+          route,
+          destFlight,
+          flights,
+          journey
+        });
       }
     });
 
     return route;
   },
 
-  flightCost(route, prices) {
+  flightCost(route, prices, passengers = 1) {
     const { flight } = prices;
     let totalDistance = 0;
 
     route.forEach(leg => (totalDistance += leg.distance));
-    return ((totalDistance * flight.price) / 100).toFixed(2);
+    return (((totalDistance * flight.price) / 100) * passengers).toFixed(2);
   },
 
   flightRouteString(route, inboundFlight = false) {
@@ -143,7 +163,11 @@ export const travelCalc = {
   processCost(flights, journeys, prices) {
     journeys.forEach(journey => {
       journey.route = travelCalc.pickFlightRoute(journey, flights);
-      journey.cost = travelCalc.flightCost(journey.route, prices);
+      journey.cost = travelCalc.flightCost(
+        journey.route,
+        prices,
+        journey.passengers
+      );
       journey.routeString = travelCalc.flightRouteString(journey.route);
       journey.returnLeg.route = travelCalc.pickFlightRoute(
         journey.returnLeg,
@@ -151,7 +175,8 @@ export const travelCalc = {
       );
       journey.returnLeg.cost = travelCalc.flightCost(
         journey.returnLeg.route,
-        prices
+        prices,
+        journey.passengers
       );
       journey.returnLeg.routeString = travelCalc.flightRouteString(
         journey.returnLeg.route,
