@@ -1,0 +1,34 @@
+$grey: #d7d7d7;
+$greyWhite: #f6f6f6;
+$textColour: #666;
+
+.table {
+  display: flex;
+  justify-content: center;
+
+  & .table__table {
+    background: white;
+    box-shadow: 1px 1px 1px 0px $grey;
+    border: 1px solid $grey;
+    border-radius: 3px;
+  }
+
+  & .table__thead .table__th {
+    text-align: center;
+    padding: 1.5rem;
+    background: $greyWhite;
+    border-bottom: 1px solid $grey;
+    font-weight: bold;
+    color: $textColour;
+  }
+
+  & .table__tbody .table__td {
+    padding: 1rem 0;
+    border-bottom: 1px solid $grey;
+    color: $textColour;
+  }
+
+  & .table__row:last-child .table__td {
+    border-bottom: none;
+  }
+}

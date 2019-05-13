@@ -1,21 +1,21 @@
 <div class="table">
-  <table class="rc-table__table">
-    <thead class="rc-table__thead">
-      <tr class="rc-table__row">
-        <th class="rc-table__th">No.</th>
-        <th class="rc-table__th">Outbound Flight Route</th>
-        <th class="rc-table__th">Outbound Flight Cost</th>
-        <th class="rc-table__th">Inbound Flight Route</th>
-        <th class="rc-table__th">Inbound Flight Cost</th>
+  <table class="table__table">
+    <thead class="table__thead">
+      <tr class="table__row">
+        <th class="table__th">No.</th>
+        <th class="table__th">Outbound Flight Route</th>
+        <th class="table__th">Outbound Flight Cost</th>
+        <th class="table__th">Inbound Flight Route</th>
+        <th class="table__th">Inbound Flight Cost</th>
       </tr>
     </thead>
     <tbody class="table__tbody">
       <tr *ngFor="let outcome of outcomes; let i = index" class="table__row">
-        <td class="rc-table__td">{{ outcome.id }}</td>
-        <td class="rc-table__td">{{ outcome.routeString }}</td>
-        <td class="rc-table__td">{{ outcome.cost }}</td>
-        <td class="rc-table__td">{{ outcome.returnLeg.routeString }}</td>
-        <td class="rc-table__td">{{ outcome.returnLeg.cost }}</td>
+        <td class="table__td">{{ outcome.id }}</td>
+        <td class="table__td">{{ outcome.routeString }}</td>
+        <td class="table__td">{{ outcome.cost }}</td>
+        <td class="table__td">{{ outcome.returnLeg.routeString }}</td>
+        <td class="table__td">{{ outcome.returnLeg.cost }}</td>
       </tr>
     </tbody>
   </table>
