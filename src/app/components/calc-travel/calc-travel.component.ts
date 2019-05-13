@@ -16,6 +16,13 @@ export class CalcTravelComponent implements OnInit {
     this.updateState(this.data);
   }
 
+  /**
+   * Checks and waits for outcomes data,
+   * passes data for travelCalc methods. Then sets return value to the outcomes variable.
+   *
+   * @param {Object} data
+   *
+   */
   updateState(data) {
     if (!data.flight || !data.journey) {
       const checkInterval = setInterval(() => {
@@ -29,6 +36,9 @@ export class CalcTravelComponent implements OnInit {
     }
   }
 
+  /**
+   * Function that invokes the data fetching functions and catches the response.
+   */
   initData() {
     this._travelData.getFlights().subscribe(res => {
       return (this.data["flight"] = res);
