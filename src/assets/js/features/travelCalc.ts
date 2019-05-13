@@ -1,17 +1,4 @@
 export const travelCalc = {
-  dataCheck(data) {
-    if (!data.flight || !data.journey) {
-      const checkInterval = setInterval(() => {
-        if (data["price"]) {
-          clearInterval(checkInterval);
-          return travelCalc.init(data);
-        }
-      }, 5);
-    } else {
-      return travelCalc.init(data);
-    }
-  },
-
   init(data) {
     let { flight, journeys, price } = data;
 
