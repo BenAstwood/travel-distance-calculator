@@ -1,4 +1,4 @@
-# TestApp
+# Travel distance calculator app
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 7.3.8.
 
@@ -25,3 +25,17 @@ Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protrac
 ## Further help
 
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+
+# Testing criteria
+
+1. Run development server. Instructions above.
+2. In the browser navigate to 'http://localhost:4200/'.
+3. Does the flight checker table show?
+4. Does each row contain information for?:
+
+- No.
+- Passengers
+- Outbound Flight Route
+- Outbound Flight Cost
+- Inbound Flight Route
+- Inbound Flight Cost
