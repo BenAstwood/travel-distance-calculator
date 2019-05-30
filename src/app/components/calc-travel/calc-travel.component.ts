@@ -1,17 +1,13 @@
-import { Component, OnInit } from "@angular/core";
-import { travelCalc } from "../../../assets/js/features/travelCalc";
-import { GetDataService } from "../../services/get-data.service";
+import {Component, OnInit} from "@angular/core";
+import init from "../../../assets/js/features/travelCalc/init";
+import {GetDataService} from "../../services/get-data.service";
 
-@Component({
-  selector: "app-calc-travel",
-  templateUrl: "./calc-travel.component.html",
-  styleUrls: ["./calc-travel.component.scss"]
-})
+@Component({selector: "app-calc-travel", templateUrl: "./calc-travel.component.html", styleUrls: ["./calc-travel.component.scss"]})
 export class CalcTravelComponent implements OnInit {
   public data = {};
   public outcomes = null;
 
-  constructor(private _travelData: GetDataService) {
+  constructor(private _travelData : GetDataService) {
     this.initData();
     this.updateState(this.data);
   }
@@ -28,11 +24,11 @@ export class CalcTravelComponent implements OnInit {
       const checkInterval = setInterval(() => {
         if (data["price"]) {
           clearInterval(checkInterval);
-          this.outcomes = travelCalc.init(data);
+          this.outcomes = init(data);
         }
       }, 5);
     } else {
-      this.outcomes = travelCalc.init(data).route;
+      this.outcomes = init(data).route;
     }
   }
 
@@ -40,17 +36,26 @@ export class CalcTravelComponent implements OnInit {
    * Function that invokes the data fetching functions and catches the response.
    */
   initData() {
-    this._travelData.getFlights().subscribe(res => {
-      return (this.data["flight"] = res);
-    });
+    this
+      ._travelData
+      .getFlights()
+      .subscribe(res => {
+        return (this.data["flight"] = res);
+      });
 
-    this._travelData.getJourneys().subscribe(res => {
-      return (this.data["journeys"] = res);
-    });
+    this
+      ._travelData
+      .getJourneys()
+      .subscribe(res => {
+        return (this.data["journeys"] = res);
+      });
 
-    this._travelData.getPrices().subscribe(res => {
-      return (this.data["price"] = res);
-    });
+    this
+      ._travelData
+      .getPrices()
+      .subscribe(res => {
+        return (this.data["price"] = res);
+      });
   }
 
   ngOnInit() {}
